@@ -1,0 +1,3 @@
+Tabuleiro: 10x10
+1 - Porta-avioes - 5 - P - Vermelho_claro
+2 - Fragata - 4 - F - Magenta_claro
