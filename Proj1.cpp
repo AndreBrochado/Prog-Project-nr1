@@ -13,10 +13,29 @@ struct boat{
 	int size;
 	char symbol;
 	string color;
-	char xpos, ypos, orientation;
+	unsigned char xPos, yPos, orientation;
 };
 
-void printTable(vector< vector<char> > table){
+bool checkValidPosition(const vector< vector<char> >& table, boat ship){
+	bool valPos=true;
+	if(ship.xPos<'a' || ship.xPos>'a'+table[0].size() || ship.yPos<'A' || ship.yPos>'A'+table.size())
+		valPos=false;
+	if(! (ship.orientation == 'V' || ship.orientation == 'H'))
+		valPos = false;
+	else if(ship.orientation == 'V')
+		for(int i=0; i<ship.size; i++){
+			if(table[ship.xPos-'a'+i][ship.yPos-'A']!='.')
+				valPos = false;
+		}
+	else if(ship.orientation == 'H')
+		for(int i=0; i<ship.size; i++){
+					if(table[ship.xPos-'a'][ship.yPos-'A'+i]!='.')
+						valPos = false;
+				};
+	return valPos;
+}
+
+void printTable(const vector< vector<char> >& table){
 	for(size_t i=0; i<table.size(); i++){
 		for(size_t j=0; j<table[0].size(); j++){
 			cout<< setw(2) << table[i][j];
@@ -36,8 +55,8 @@ int main(){
 	do{
 		cout<< "Insira o nome do ficheiro de configuracao:  " << endl;
 		cin>> fileName;
-		if(fileName.length()<=4 || fileName.substr(fileName.length()-4, 4)!= ".txt") //This will add
-			fileName+=".txt";     //the .txt extension if the user didn't.
+		if(fileName.find('.') == string::npos) //This will add
+			fileName+=".txt";     //the .txt extension if the user didn't include one.
 
 		configFile.open(fileName.c_str(), ios::in);
 
