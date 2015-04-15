@@ -3,7 +3,26 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <ctime>
+#include <cstdlib>
+#include <windows.h>
 
+#define BLACK 0
+#define BLUE 1
+#define GREEN 2
+#define CYAN 3
+#define RED 4
+#define MAGENTA 5
+#define BROWN 6
+#define LIGHTGRAY 7
+#define DARKGRAY 8
+#define LIGHTBLUE 9
+#define LIGHTGREEN 10
+#define LIGHTCYAN 11
+#define LIGHTRED 12
+#define LIGHTMAGENTA 13
+#define YELLOW 14
+#define WHITE 15
 
 using namespace std;
 
@@ -15,6 +34,24 @@ struct boat{
 	string color;
 	unsigned char xPos, yPos, orientation;
 };
+
+// Set text color & background
+void setcolor(unsigned int color, unsigned int background_color)
+{
+HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+if (background_color == BLACK)
+SetConsoleTextAttribute(hCon, color);
+else
+SetConsoleTextAttribute(hCon, color | BACKGROUND_BLUE | BACKGROUND_GREEN |
+BACKGROUND_RED);
+}
+
+// Set text color
+void setcolor(unsigned int color)
+{
+HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+SetConsoleTextAttribute(hcon, color);
+}
 
 bool checkValidPosition(const vector< vector<char> >& table, boat ship){
 	bool valPos=true;
@@ -36,8 +73,19 @@ bool checkValidPosition(const vector< vector<char> >& table, boat ship){
 }
 
 void printTable(const vector< vector<char> >& table){
+	cout << " ";
+	setcolor(15);
+	for(size_t k=0; k<table.size();k++){
+		cout << setw(2) << char ('a'+k);
+	}
+	cout<< endl;
+
 	for(size_t i=0; i<table.size(); i++){
 		for(size_t j=0; j<table[0].size(); j++){
+			if(j==0){
+				setcolor(15,0);
+				cout << char ('A'+i);}
+			setcolor(9,7);
 			cout<< setw(2) << table[i][j];
 		}
 		cout<<endl;
