@@ -6,7 +6,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <windows.h>
-#include <locale>
+#include <limits>
 
 using namespace std;
 
@@ -16,7 +16,7 @@ struct boat{
 	unsigned int size;
 	char symbol;
 	string color;
-	unsigned char xPos, yPos, orientation;
+	unsigned char line, column, orientation;
 };
 
 // Set text color & background
@@ -59,28 +59,28 @@ int colorValue(string color){
 }
 
 //checks if the position given for the given ship is valid (doesn't cross other boats or goes out of the board)
-bool checkValidPosition(const vector< vector<char> >& table, boat ship){
+bool isValidPosition(const vector< vector<char> >& table, boat ship){
 	bool valPos=true;
-	if(ship.xPos<'a' || ship.xPos>'a'+table[0].size() || ship.yPos<'A' || ship.yPos>'A'+table.size())
+	if(ship.column<'a' || ship.column>'a'+table[0].size() || ship.line<'A' || ship.line>'A'+table.size())
 		valPos=false;
 	else if(! (ship.orientation == 'V' || ship.orientation == 'H'))
 		valPos = false;
 	else if(ship.orientation == 'V'){
-		if(ship.yPos + ship.size > 'A' + table.size())
+		if(ship.line + ship.size > 'A' + table.size())
 			valPos=false;
 		else{
 			for(size_t i=0; i<ship.size; i++){
-				if(table[ship.xPos-'a'+i][ship.yPos-'A']!='.')
+				if(table[ship.column-'a'+i][ship.line-'A']!='.')
 					valPos = false;
 			}
 		}
 	}
 	else if(ship.orientation == 'H'){
-		if(ship.yPos + ship.size > 'A' + table.size())
+		if(ship.line + ship.size > 'A' + table.size())
 			valPos=false;
 		else{
 			for(size_t i=0; i<ship.size; i++){
-				if(table[ship.xPos-'a'][ship.yPos-'A'+i]!='.')
+				if(table[ship.column-'a'][ship.line-'A'+i]!='.')
 					valPos = false;
 			}
 		}
@@ -123,15 +123,19 @@ void printTable(const vector< vector<char> >& table, const vector<boat> &boatLis
 
 void addBoat(vector< vector<char> >& table, boat ship){
 	if(ship.orientation == 'V')
-		for(int i = ship.yPos; i<= ship.yPos + ship.size; i++)
-			table[i][ship.xPos]=ship.symbol;
+		for(size_t i = ship.line; i<= ship.line + ship.size; i++){
+			table[i][ship.column]=ship.symbol;
+}
+	else
+		for(size_t i = ship.column; i<= ship.column + ship.size; i++){
+			table[ship.line][i]=ship.symbol;
+		}
 
 }
 
-// void addBoat(vector< vector<char> > &table, boat)
 int main(){
-	string fileName, dimensions, trash; //trash will be used to get full words like the board name
-	char aux; //gets out chars like 'x' and '-'
+	string fileName, stringTrash; //trash will be used to get full words like the board name
+	char charTrash, mode; //gets out chars like 'x' and '-'
 	ifstream configFile;
 	int tableWidth, tableHeight;
 	vector<boat> boatList;
@@ -150,15 +154,37 @@ int main(){
 			<< "Introduza novamente o nome do ficheiro" << endl;
 	}while(!configFile.is_open());
 
-	configFile >> trash >> tableHeight >> aux >> tableWidth; //gets "boardName: " and "x" to aux, gets number of lines(height) and columns(width)
+	configFile >> stringTrash >> tableHeight >> charTrash >> tableWidth; //gets "boardName: " and "x" to aux, gets number of lines(height) and columns(width)
 	vector< vector<char> > table(tableHeight, vector<char>(tableWidth, '.'));
 
 	do{
-		configFile>>tempBoat.number>>aux>>tempBoat.name>>aux
-		>>tempBoat.size>>aux>>tempBoat.symbol>>aux>>tempBoat.color;
+		configFile>>tempBoat.number>>charTrash>>tempBoat.name>>charTrash
+		>>tempBoat.size>>charTrash>>tempBoat.symbol>>charTrash>>tempBoat.color;
 		boatList.push_back(tempBoat);
 
 	}while(!configFile.eof());
-	printTable(table, boatList);
+	configFile.close();
+	do{
+	setvbuf(stdout, NULL, 0, _IONBF);
+	cout<<"Escolha o modo de colocacao dos barcos (A para automatico, M para manual) : ";
+	cin>>mode;
+	if(!(mode=='A' || mode=='M'))
+		cerr<<"Modo inválido! Insira apenas A ou M!" << endl;
+	}while(!(mode=='A' || mode=='M'));
+	if(mode=='A')
+		srand(time(NULL));
+		for(size_t a = 0; a<boatList.size(); a++){
+			do{
+			boatList[a].line = rand() % tableHeight + 65;
+			boatList[a].column = rand() % tableWidth + 97;
+			if(rand()%2==0)
+				boatList[a].orientation = 'H';
+			else
+				boatList[a].orientation = 'V';
+			}while(!isValidPosition(table, boatList[a]));
+			addBoat(table, boatList[a]);
+			printTable(table, boatList);
+		}
+
 	return 0;
 }
