@@ -1,0 +1,12 @@
+10 x 10
+P 5 Fh V
+F 4 Fg V
+C 3 Bc V
+C 3 Ce V
+S 2 Cg H
+S 2 Dh H
+S 2 Ic V
+L 1 Fe V
+L 1 Cd H
+L 1 Be H
+L 1 Hb V
