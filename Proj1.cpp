@@ -10,6 +10,7 @@
 
 using namespace std;
 
+//peido
 
 struct boat {
 	unsigned int number;
