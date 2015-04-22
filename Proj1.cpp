@@ -36,7 +36,7 @@ void setcolor(unsigned int color) {
 }
 
 /**
- *returns the integer value for a string with the name of the color
+ *returns the integer value for a string with the name of the color -- CHANGE TO VECTOR, ADD DEFINES
  *returns 15 (white) in case of an unrecognized color
  *future implementation would return -1 to find bugs
  */
@@ -93,7 +93,8 @@ void writeBoatToFile(boat ship, ofstream& outputFile){
 			<<ship.size<<" "
 			<<char(ship.line +'A')<<""
 			<<char(ship.column + 'a')<<" "
-			<<ship.orientation<<endl;
+			<<ship.orientation<<" "
+			<<colorValue(ship.color)<<endl;
 }
 
 /**
@@ -173,7 +174,7 @@ void addBoatManual(vector<vector<char> >& table, boat ship) {
 }
 
 /**
- * adds a boat to a randomly assigned (and orientation) in the table matrix
+ * adds a boat to a randomly assigned (and orientation) in the table matrix -- create randomBetween function
  * always checking if its valid and repeating the assignation process if it isn't (until it is)
  */
 void addBoatRandom(vector< vector<char> >& table, boat &ship){
@@ -193,7 +194,7 @@ void addBoatRandom(vector< vector<char> >& table, boat &ship){
 }
 
 /**
- * given the input file stream, it will ask for the name of the file
+ * given the input file stream, it will ask for the name of the file - i/o in english
  * and open it, repeating the process if the name doesn't exist
  */
 void loadConfigFile(ifstream& configFile) {
@@ -266,6 +267,7 @@ void readMode(char &mode) {
  * In manual mode, it will ask for the position and orientation
  * and if the position is valid, add it.
  * then, for both cases, it writes the boat info in the output file
+ * -- COULD MAKE readCoordinates
  */
 void addBoatsAndSaveToFile(char mode, vector<boat>& boatList,
 		vector<vector<char> >& table, ofstream& outputFile) {
@@ -288,10 +290,14 @@ void addBoatsAndSaveToFile(char mode, vector<boat>& boatList,
 							<< ". Falta(m) " << j << "." << endl;
 					setcolor(15, 0);
 					cout << "LINHA (A.." << char('A' + table.size() - 1)
-									<< ")  COLUNA (a.."
-									<< char('a' + table[0].size() - 1)
-									<< ") ORIENTACAO(H V) ? ";
+													<< ")  COLUNA (a.."
+													<< char('a' + table[0].size() - 1)
+													<< ") ORIENTACAO(H V) ? ";
 					cin >> line >> column >> boatList[i].orientation;
+					if(cin.fail()){
+							cin.clear();
+							cin.ignore(1000, '\n');
+					}
 					boatList[i].line = line - 'A';
 					boatList[i].column = column - 'a';
 					if (!isValidPosition(table, boatList[i]))
