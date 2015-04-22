@@ -37,10 +37,10 @@ void setcolor(unsigned int color) {
 }
 
 /**
-  *returns the integral value for a string with the name of the color
-  *returns 15 (white) in case of an unrecognized color
-  *future implementation would return -1 to find bugs
-  */
+ *returns the integer value for a string with the name of the color
+ *returns 15 (white) in case of an unrecognized color
+ *future implementation would return -1 to find bugs
+ */
 int colorValue(string color) {
 	if (color == "Preto") return 0;
 	if (color == "Azul") return 1;
@@ -62,11 +62,11 @@ int colorValue(string color) {
 }
 
 /**
-  * Goes through the list of boats
-  * and when it finds the boat with the given symbol
-  * returns its color.
-  * returns -1 in case of error (should never happen since symbol input comes from the table matrix)
-  */
+ * Goes through the list of boats
+ * and when it finds the boat with the given symbol
+ * returns its color.
+ * returns -1 in case of error (should never happen since symbol input comes from the table matrix)
+ */
 int boatColor(const vector<boat> &boatList, char symbol) {
 	for (size_t i = 0; i < boatList.size(); i++) {
 		if (boatList[i].symbol == symbol) {
@@ -77,18 +77,18 @@ int boatColor(const vector<boat> &boatList, char symbol) {
 }
 
 /**
-  * Given the output file stream
-  * saves the table dimensions
-  * (number of lines x number of columns)
-  */
+ * Given the output file stream
+ * saves the table dimensions
+ * (number of lines x number of columns)
+ */
 void writeDimensionsToFile(const vector < vector<char> >& table, ofstream& outputFile){
 	outputFile<<table.size()<<" x "<<table[0].size()<<endl;
 }
 
 /**
-  * Given a boat with set position
-  * writes its info on the given output file stream
-  */
+ * Given a boat with set position
+ * writes its info on the given output file stream
+ */
 void writeBoatToFile(boat ship, ofstream& outputFile){
 	outputFile<<ship.symbol<<" "
 			<<ship.size<<" "
@@ -98,10 +98,10 @@ void writeBoatToFile(boat ship, ofstream& outputFile){
 }
 
 /**
-  * returns false if the ship is out of bounds (either partially or fully)
-  * returns false if the ship crosses another one
-  * returns true if the position is valid
-  */
+ * returns false if the ship is out of bounds (either partially or fully)
+ * returns false if the ship crosses another one
+ * returns true if the position is valid
+ */
 bool isValidPosition(const vector<vector <char> > &table, boat ship) {
 	if (ship.column > table[0].size() || ship.line > table.size())
 		return false;
@@ -131,10 +131,10 @@ bool isValidPosition(const vector<vector <char> > &table, boat ship) {
 }
 
 /**
-  * prints to the console the table vector (with light gray background and light blue dots)
-  * if it finds a symbol different than '.' it will look up for its color
-  * and print the symbol with the according color
-  */
+ * prints to the console the table vector (with light gray background and light blue dots)
+ * if it finds a symbol different than '.' it will look up for its color
+ * and print the symbol with the according color
+ */
 void printTable(const vector<vector <char> > &table, const vector<boat> &boatList) {
 	cout << " ";
 	setcolor(15);
@@ -160,8 +160,8 @@ void printTable(const vector<vector <char> > &table, const vector<boat> &boatLis
 }
 
 /**
-  * adds a boat to its given position (and orientation) in the table matrix
-  */
+ * adds a boat to its given position (and orientation) in the table matrix
+ */
 void addBoatManual(vector<vector<char> >& table, boat ship) {
 	if (ship.orientation == 'V')
 		for (size_t i = ship.line; i < ship.line + ship.size; i++) {
@@ -174,9 +174,9 @@ void addBoatManual(vector<vector<char> >& table, boat ship) {
 }
 
 /**
-  * adds a boat to a randomly assigned (and orientation) in the table matrix
-  * always checking if its valid and repeating the assignation process if it isn't (until it is)
-  */
+ * adds a boat to a randomly assigned (and orientation) in the table matrix
+ * always checking if its valid and repeating the assignation process if it isn't (until it is)
+ */
 void addBoatRandom(vector< vector<char> >& table, boat &ship){
 	do{
 		ship.line = rand()%table.size();
@@ -194,9 +194,9 @@ void addBoatRandom(vector< vector<char> >& table, boat &ship){
 }
 
 /**
-  * given the input file stream, it will ask for the name of the file
-  * and open it, repeating the process if the name doesn't exist
-  */
+ * given the input file stream, it will ask for the name of the file
+ * and open it, repeating the process if the name doesn't exist
+ */
 void loadConfigFile(ifstream& configFile) {
 	string fileName="";
 	do {
@@ -209,14 +209,14 @@ void loadConfigFile(ifstream& configFile) {
 		configFile.open(fileName.c_str(), ios::in);
 		if (!configFile.is_open())
 			cerr << "Ficheiro nao existe ou nao pode ser aberto!" << endl
-					<< "Introduza novamente o nome do ficheiro" << endl;
+			<< "Introduza novamente o nome do ficheiro" << endl;
 	} while (!configFile.is_open());
 }
 
 /**
-  * given the output file stream, it will ask for the name of the file
-  * and open/create it
-  */
+ * given the output file stream, it will ask for the name of the file
+ * and open/create it
+ */
 void createOutputFile(ofstream& outputFile) {
 	string outputFileName="";
 	cout << "Insira o nome do ficheiro de tabuleiro (para gravacao): " << endl;
@@ -230,44 +230,44 @@ void createOutputFile(ofstream& outputFile) {
 }
 
 /**
-  * given a vector and the input file stream
-  * this will extract the info for every boat in the file
-  * and push them into the vector, making it a list of boats
-  */
+ * given a vector and the input file stream
+ * this will extract the info for every boat in the file
+ * and push them into the vector, making it a list of boats
+ */
 void readConfigFile(ifstream& configFile, vector<boat>& boatList) {
 	boat tempBoat;
 	char charTrash;
 	do {
 		configFile >> tempBoat.number >> charTrash >> tempBoat.name >> charTrash
-				>> tempBoat.size >> charTrash >> tempBoat.symbol >> charTrash
-				>> tempBoat.color;
+		>> tempBoat.size >> charTrash >> tempBoat.symbol >> charTrash
+		>> tempBoat.color;
 		boatList.push_back(tempBoat);
 	} while (!configFile.eof());
 }
 
 /**
-  * reads the mode of writing the boats on the game board
-  * doesn't need to return since it's passed by reference
-  */
+ * reads the mode of writing the boats on the game board
+ * doesn't need to return since it's passed by reference
+ */
 void readMode(char &mode) {
 	do {
 		cout
-				<< "Escolha o modo de colocacao dos barcos (A para automatico, M para manual):";
+		<< "Escolha o modo de colocacao dos barcos (A para automatico, M para manual):";
 		cin >> mode;
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		if (!(mode == 'A' || mode == 'M'))
 			cerr << "Por favor escolha entre modo Automatico (A) ou manual (M)"
-					<< endl;
+			<< endl;
 	} while (!(mode == 'A' || mode == 'M'));
 }
 
 /**
-  *  Given the mode, the list of boats, the board matrix and the output file stream
-  *  In automatic mode, call the function to add boats randomly until there are no boats left
-  *  In manual mode, it will ask for the position and orientation
-  *  and if the position is valid, add it.
-  *  then, for both cases, it writes the boat info in the output file
-  */
+ * Given the mode, the list of boats, the board matrix and the output file stream
+ * In automatic mode, call the function to add boats randomly until there are no boats left
+ * In manual mode, it will ask for the position and orientation
+ * and if the position is valid, add it.
+ * then, for both cases, it writes the boat info in the output file
+ */
 void addBoatsAndSaveToFile(char mode, vector<boat>& boatList,
 		vector<vector<char> >& table, ofstream& outputFile) {
 	if (mode == 'A') {
@@ -289,9 +289,9 @@ void addBoatsAndSaveToFile(char mode, vector<boat>& boatList,
 							<< ". Falta(m) " << j << "." << endl;
 					setcolor(15, 0);
 					cout << "LINHA (A.." << char('A' + table.size() - 1)
-							<< ")  COLUNA (a.."
-							<< char('a' + table[0].size() - 1)
-							<< ") ORIENTACAO(H V) ? ";
+									<< ")  COLUNA (a.."
+									<< char('a' + table[0].size() - 1)
+									<< ") ORIENTACAO(H V) ? ";
 					cin >> line >> column >> boatList[i].orientation;
 					boatList[i].line = line - 'A';
 					boatList[i].column = column - 'a';
@@ -327,7 +327,6 @@ int main() {
 	configFile.close();
 
 	readMode(mode);
-
 
 	addBoatsAndSaveToFile(mode, boatList, table, outputFile);
 	printTable(table, boatList);
