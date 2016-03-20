@@ -1,3 +1,7 @@
-# Prog-Project-nr1
-<15/04 - Ler ficheiro, criar matriz tabuleiro / desenha-la simplesmente
-15/04 aula de PROG - Função checkValidPosition
+# Prog-Project-nr1 -- Battleships Board Generator
+
+Run Proj1 to experiment!
+
+asd.txt is an example of a valid input file
+
+
